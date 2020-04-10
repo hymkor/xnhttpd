@@ -44,27 +44,37 @@ func (this *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	script := filepath.Join(this.workDir, filepath.FromSlash(req.URL.Path))
 	log.Printf("%s %s\n", interpreter, script)
 	cmd := exec.Command(filepath.FromSlash(interpreter), script)
-	inPipe, err := cmd.StdinPipe()
+	toCgi, err := cmd.StdinPipe()
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer inPipe.Close()
 
-	if req.URL.RawQuery != "" {
-		globalEnv := os.Environ()
-		env := make([]string, len(globalEnv)+1)
-		copy(env, globalEnv)
-		env[len(env)-1] = "QUERY_STRING=" + req.URL.RawQuery
-		cmd.Env = env
+	var cookie strings.Builder
+	for _, c := range req.Cookies() {
+		if cookie.Len() > 0 {
+			cookie.WriteString("; ")
+		}
+		cookie.WriteString(c.String())
 	}
 
-	outPipe, err := cmd.StdoutPipe()
+	env := []string{
+		"QUERY_STRING=" + req.URL.RawQuery,
+		fmt.Sprintf("CONTENT_LENGTH=%d", req.ContentLength),
+		"REQUEST_METHOD=" + strings.ToUpper(req.Method),
+		"HTTP_COOKIE=" + cookie.String(),
+		"HTTP_USER_AGENT=" + req.UserAgent(),
+		"SCRIPT_NAME=" + req.URL.Path,
+		"REMOTE_ADDR=" + req.RemoteAddr,
+	}
+	cmd.Env = append(env, os.Environ()...)
+
+	fromCgi, err := cmd.StdoutPipe()
 	if err != nil {
 		log.Fatal(err)
 	}
-	go func(r io.ReadCloser, w http.ResponseWriter) {
-		br := bufio.NewReader(r)
-		defer r.Close()
+	go func() {
+		br := bufio.NewReader(fromCgi)
+		defer fromCgi.Close()
 		for {
 			line, err := br.ReadString('\n')
 			if err != nil {
@@ -79,12 +89,15 @@ func (this *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 			}
 			w.Header().Add(f[0], f[1])
 		}
-	}(outPipe, w)
+	}()
 
 	cmd.Stderr = os.Stderr
 	cmd.Start()
 	log.Println("Start")
-	io.Copy(inPipe, req.Body)
+	// io.Copy(toCgi, io.TeeReader(req.Body, os.Stderr))
+	// fmt.Fprintln(os.Stderr)
+	io.Copy(toCgi, req.Body)
+	toCgi.Close()
 	req.Body.Close()
 	cmd.Wait()
 	log.Println("Done")
