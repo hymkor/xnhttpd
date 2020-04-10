@@ -50,6 +50,14 @@ func (this *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 	defer inPipe.Close()
 
+	if req.URL.RawQuery != "" {
+		globalEnv := os.Environ()
+		env := make([]string, len(globalEnv)+1)
+		copy(env, globalEnv)
+		env[len(env)-1] = "QUERY_STRING=" + req.URL.RawQuery
+		cmd.Env = env
+	}
+
 	outPipe, err := cmd.StdoutPipe()
 	if err != nil {
 		log.Fatal(err)
