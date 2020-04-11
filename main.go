@@ -45,6 +45,11 @@ func (this *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	script := filepath.Join(this.workDir, filepath.FromSlash(req.URL.Path))
+	if _, err := os.Stat(script); err != nil {
+		log.Printf("%s\n", err.Error())
+		this.notFound.ServeHTTP(w, req)
+		return
+	}
 	log.Printf("%s %s\n", interpreter, script)
 	cmd := exec.Command(filepath.FromSlash(interpreter), script)
 	toCgi, err := cmd.StdinPipe()
