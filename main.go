@@ -12,6 +12,7 @@ import (
 	"os/exec"
 	"path"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -33,6 +34,8 @@ type Handler struct {
 	workDir  string
 	notFound http.Handler
 }
+
+var rxPortNo = regexp.MustCompile(`:\d+$`)
 
 func (this *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	suffix := path.Ext(req.URL.Path)
@@ -64,7 +67,7 @@ func (this *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		"HTTP_COOKIE=" + cookie.String(),
 		"HTTP_USER_AGENT=" + req.UserAgent(),
 		"SCRIPT_NAME=" + req.URL.Path,
-		"REMOTE_ADDR=" + req.RemoteAddr,
+		"REMOTE_ADDR=" + rxPortNo.ReplaceAllString(req.RemoteAddr, ""),
 	}
 	cmd.Env = append(env, os.Environ()...)
 
