@@ -19,3 +19,5 @@ and calls CGI scripts on the current directory.
 	}
 }
 ```
+
+To use sample [wiki-engine](https://github.com/zetamatta/markdowned_wifky/), open http://127.0.0.1:8000/wiki.pl with web-browser.
