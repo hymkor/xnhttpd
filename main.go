@@ -50,8 +50,9 @@ func (this *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		this.notFound.ServeHTTP(w, req)
 		return
 	}
-	log.Printf("%s %s\n", interpreter, script)
-	cmd := exec.Command(filepath.FromSlash(interpreter), script)
+	interpreter = filepath.FromSlash(interpreter)
+	log.Printf("\"%s\" \"%s\"\n", interpreter, script)
+	cmd := exec.Command(interpreter, script)
 	toCgi, err := cmd.StdinPipe()
 	if err != nil {
 		log.Fatal(err)
