@@ -21,3 +21,6 @@ and calls CGI scripts on the current directory.
 ```
 
 To use sample [wiki-engine](https://github.com/zetamatta/markdowned_wifky/), open http://127.0.0.1:8000/wiki.pl with web-browser.
+
+By defaults, when the web-browser requests a file whose suffix is `*.md`,
+the built-in markdown text viewer by [goldmark](https://github.com/yuin/goldmark) runs.
