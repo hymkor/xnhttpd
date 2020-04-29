@@ -46,23 +46,41 @@ var fileServeSuffix = map[string]string{
 var markdownReader = goldmark.New(
 	goldmark.WithRendererOptions(goldmarkHtml.WithUnsafe()))
 
+func findPathInsteadOfDirectory(dir string) string {
+	for _, fname := range []string{"index.html", "readme.md"} {
+		path := filepath.Join(dir, fname)
+		if _, err := os.Stat(path); err == nil {
+			return path
+		}
+	}
+	return ""
+}
+
 func (this *Handler) serveHttp(w http.ResponseWriter, req *http.Request) error {
-	suffix := path.Ext(req.URL.Path)
-	if interpreter, ok := this.Config.Handler[suffix]; ok {
-		script := filepath.Join(this.workDir, filepath.FromSlash(req.URL.Path))
-		if _, err := os.Stat(script); err != nil {
+	log.Printf("%s %s %s\n", req.RemoteAddr, req.Method, req.URL.Path)
+	targetPath := filepath.Join(this.workDir, filepath.FromSlash(req.URL.Path))
+	stat, err := os.Stat(targetPath)
+	if err != nil {
+		return err
+	}
+	if stat.IsDir() {
+		targetPath = findPathInsteadOfDirectory(targetPath)
+		if targetPath == "" {
 			return err
 		}
+	}
+
+	suffix := path.Ext(targetPath)
+	if interpreter, ok := this.Config.Handler[suffix]; ok {
 		interpreter = filepath.FromSlash(interpreter)
-		log.Printf("\"%s\" \"%s\"\n", interpreter, script)
-		if err := callCgi(interpreter, script, w, req, os.Stderr, os.Stderr); err != nil {
+		log.Printf("\"%s\" \"%s\"\n", interpreter, targetPath)
+		if err := callCgi(interpreter, targetPath, w, req, os.Stderr, os.Stderr); err != nil {
 			return err
 		}
 		return nil
 	}
 	if contentType, ok := fileServeSuffix[suffix]; ok {
-		sourcePath := filepath.Join(this.workDir, filepath.FromSlash(req.URL.Path))
-		fd, err := os.Open(sourcePath)
+		fd, err := os.Open(targetPath)
 		if err != nil {
 			return err
 		}
@@ -76,8 +94,7 @@ func (this *Handler) serveHttp(w http.ResponseWriter, req *http.Request) error {
 		return nil
 	}
 	if strings.EqualFold(suffix, ".md") {
-		sourcePath := filepath.Join(this.workDir, filepath.FromSlash(req.URL.Path))
-		source, err := ioutil.ReadFile(sourcePath)
+		source, err := ioutil.ReadFile(targetPath)
 		if err != nil {
 			return err
 		}
