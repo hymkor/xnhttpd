@@ -19,7 +19,10 @@ import (
 )
 
 type Config struct {
-	Handler map[string]string `json:"handler"`
+	Handler  map[string]string `json:"handler"`
+	Markdown struct {
+		Html bool `json:"html"`
+	} `json:"markdown"`
 }
 
 func (this *Config) Read(r io.Reader) error {
@@ -43,8 +46,7 @@ var fileServeSuffix = map[string]string{
 	".html": "text/html",
 }
 
-var markdownReader = goldmark.New(
-	goldmark.WithRendererOptions(goldmarkHtml.WithUnsafe()))
+var markdownReader goldmark.Markdown
 
 func findPathInsteadOfDirectory(dir string) string {
 	for _, fname := range []string{"index.html", "readme.md"} {
@@ -209,6 +211,13 @@ func mains(args []string) error {
 	err := handler.Config.Read(os.Stdin)
 	if err != nil {
 		return err
+	}
+	if handler.Config.Markdown.Html {
+		markdownReader =
+			goldmark.New(
+				goldmark.WithRendererOptions(goldmarkHtml.WithUnsafe()))
+	} else {
+		markdownReader = goldmark.New()
 	}
 	handler.notFound = http.NotFoundHandler()
 	handler.workDir, err = os.Getwd()
