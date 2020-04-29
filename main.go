@@ -73,8 +73,8 @@ func (this *Handler) serveHttp(w http.ResponseWriter, req *http.Request) error {
 	suffix := path.Ext(targetPath)
 	if interpreter, ok := this.Config.Handler[suffix]; ok {
 		interpreter = filepath.FromSlash(interpreter)
-		log.Printf("\"%s\" \"%s\"\n", interpreter, targetPath)
-		if err := callCgi(interpreter, targetPath, w, req, os.Stderr, os.Stderr); err != nil {
+		if err := callCgi(interpreter, targetPath, w, req,
+			func(s string) { log.Println(s) }, os.Stderr); err != nil {
 			return err
 		}
 		return nil

@@ -16,7 +16,7 @@ var rxPortNo = regexp.MustCompile(`:\d+$`)
 func callCgi(interpreter, script string,
 	w http.ResponseWriter,
 	req *http.Request,
-	logger, cgierr io.Writer) error {
+	logger func(string), cgierr io.Writer) error {
 
 	cmd := exec.Command(interpreter, script)
 	toCgi, err := cmd.StdinPipe()
@@ -69,14 +69,14 @@ func callCgi(interpreter, script string,
 	cmd.Stderr = cgierr
 	cmd.Start()
 	if logger != nil {
-		io.WriteString(logger, "Start\n")
+		logger(fmt.Sprintf("Call \"%s\" \"%s\"", interpreter, script))
 	}
 	io.Copy(toCgi, req.Body)
 	toCgi.Close()
 	req.Body.Close()
 	cmd.Wait()
 	if logger != nil {
-		io.WriteString(logger, "Done\n")
+		logger(fmt.Sprintf("Done \"%s\" \"%s\"", interpreter, script))
 	}
 	return nil
 }
