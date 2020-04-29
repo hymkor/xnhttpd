@@ -16,6 +16,9 @@ and calls CGI scripts on the current directory.
 {
 	"handler":{
 		".pl":"c:/Program Files/Git/usr/bin/perl.exe"
+	},
+	"markdown":{
+		"html":true
 	}
 }
 ```
