@@ -1931,7 +1931,7 @@ sub print_template{
         },
     );
     &print_header( userheader=>'template' );
-    $template =~ s/([\&\%]){(.*?)}/&template_callback(\%default,\%hash,$1,$2)/ge;
+    $template =~ s/([\&\%])\{(.*?)\}/&template_callback(\%default,\%hash,$1,$2)/ge;
     &puts( $template );
     &puts('</body></html>');
 }
