@@ -105,12 +105,20 @@ func (this *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 func mains(args []string) error {
 	var handler Handler
-	err := handler.Config.Read(os.Stdin)
-	if err != nil {
-		return err
+	for _, configFname := range args {
+		fd, err := os.Open(configFname)
+		if err != nil {
+			return err
+		}
+		err = handler.Config.Read(fd)
+		fd.Close()
+		if err != nil {
+			return err
+		}
 	}
 	enableHtmlInMarkdown(handler.Config.Markdown.Html)
 	handler.notFound = http.NotFoundHandler()
+	var err error
 	handler.workDir, err = os.Getwd()
 	if err != nil {
 		return err
