@@ -1,18 +1,5 @@
 print("<html><body>")
-print("<h1>Embbed Lua TEST</h1>")
-
-function decode(s)
-    return string.gsub(s,"%%[0-9A-Fa-f][0-9A-Fa-f]",function(p)
-        return string.char(tonumber("0x"..string.sub(p,2)))
-    end)
-end
-
-function esc(s)
-    s = string.gsub(s,"&","&amp;")
-    s = string.gsub(s,"<","&lt;")
-    s = string.gsub(s,">","&gt;")
-    return s
-end
+print("<h1>Embbed Lua Test</h1>")
 
 for _,key in pairs{
     "QUERY_STRING",
@@ -23,9 +10,21 @@ for _,key in pairs{
     "SCRIPT_NAME",
     "REMOTE_ADDR",
 } do
-    print(string.format("<div>%s=%s</div>",esc(key),esc(decode(_G[key]))))
+    print(string.format("<div>%s=%s</div>",esc(key),esc(_G[key])))
 end
 
+print("<hr />")
+
 print(string.format("<div>a=%s</div>",esc(get("a"))))
+
+print(string.format([[
+<form action="%s" method="post">
+<div>New `a` value</div>
+<div>
+<input type="text" name="a" value="%s" />
+<input type="submit" />
+</div>
+</form>
+]],esc(SCRIPT_NAME),esc(get("a"))))
 
 print("</body></html>")
