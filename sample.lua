@@ -1,5 +1,5 @@
 print("<html><body>")
-print("<h1>Embbed Lua Test</h1>")
+print("<h1>Embedded Lua Test</h1>")
 
 for _,key in pairs{
     "QUERY_STRING",
