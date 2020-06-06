@@ -25,4 +25,7 @@ for _,key in pairs{
 } do
     print(string.format("<div>%s=%s</div>",esc(key),esc(decode(_G[key]))))
 end
+
+print(string.format("<div>a=%s</div>",esc(get("a"))))
+
 print("</body></html>")
