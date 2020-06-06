@@ -78,7 +78,7 @@ print(string.format([[
 ]],esc(SCRIPT_NAME),esc(get("a"))))
 
 local counter = cookie("counter")
-if counter then
+if counter and counter.value then
     counter = { value= tonumber(counter.value)+1 }
 else
     counter = { value=1 }
