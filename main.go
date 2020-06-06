@@ -93,6 +93,9 @@ func (this *Handler) serveHttp(w http.ResponseWriter, req *http.Request) error {
 	if strings.EqualFold(suffix, ".md") {
 		return catAsMarkdown(targetPath, w)
 	}
+	if strings.EqualFold(suffix, ".lua") {
+		return callLuaHandler(targetPath, req, w)
+	}
 	return fmt.Errorf("%s: not support suffix", suffix)
 }
 
