@@ -55,6 +55,13 @@ func callLuaHandler(targetPath string,
 		return 0
 	}))
 
+	L.SetGlobal("get", L.NewFunction(func(LL *lua.LState) int {
+		key := LL.Get(1).String()
+		val := req.FormValue(key)
+		L.Push(lua.LString(val))
+		return 1
+	}))
+
 	err := L.DoFile(targetPath)
 	if err == nil {
 		w.WriteHeader(http.StatusOK)
