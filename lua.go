@@ -2,10 +2,64 @@ package main
 
 import (
 	"net/http"
+	"os"
 	"strings"
+	"sync"
+	"time"
 
 	"github.com/yuin/gopher-lua"
+	"github.com/yuin/gopher-lua/parse"
 )
+
+var luaCodeCache = sync.Map{}
+
+type LuaCodeCacheT struct {
+	Time time.Time
+	Code *lua.FunctionProto
+}
+
+func luaDoFile(L *lua.LState, targetPath string) error {
+	stat, err := os.Stat(targetPath)
+	if err != nil {
+		return err
+	}
+	fileModTime := stat.ModTime()
+
+	if value, ok := luaCodeCache.Load(targetPath); ok {
+		// when cache is same or newer (= not older)
+		if cc, ok := value.(*LuaCodeCacheT); ok {
+			//     cahce's time >= file's
+			// <=> NOT cahce's time < file's
+			// <=> NOT file's time > cache's
+			if !fileModTime.After(cc.Time) {
+				// println("cache hit")
+				L.Push(L.NewFunctionFromProto(cc.Code))
+				return L.PCall(0, 0, nil)
+			}
+		}
+	}
+	// println("cache failed")
+	fd, err := os.Open(targetPath)
+	if err != nil {
+		return err
+	}
+	defer fd.Close()
+	chunk, err := parse.Parse(fd, targetPath)
+	if err != nil {
+		return err
+	}
+	proto, err := lua.Compile(chunk, targetPath)
+	if err != nil {
+		return err
+	}
+
+	luaCodeCache.Store(targetPath, &LuaCodeCacheT{
+		Time: fileModTime,
+		Code: proto,
+	})
+	L.Push(L.NewFunctionFromProto(proto))
+	return L.PCall(0, 0, nil)
+}
 
 var escapeList = strings.NewReplacer(
 	"&", "&amp;",
@@ -124,7 +178,7 @@ func callLuaHandler(targetPath string,
 		return 0
 	}))
 
-	err := L.DoFile(targetPath)
+	err := luaDoFile(L, targetPath)
 	if err == nil {
 		w.WriteHeader(http.StatusOK)
 		w.Write(output)
