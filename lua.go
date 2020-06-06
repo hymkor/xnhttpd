@@ -12,24 +12,27 @@ var escapeList = strings.NewReplacer(
 	"<", "&lt;",
 	">", "&gt;")
 
+func getAllCookie(req *http.Request) string {
+	cookie := []byte{}
+	for _, c := range req.Cookies() {
+		if len(cookie) > 0 {
+			cookie = append(cookie, "; "...)
+		}
+		cookie = append(cookie, c.String()...)
+	}
+	return string(cookie)
+}
+
 func callLuaHandler(targetPath string,
 	req *http.Request,
 	w http.ResponseWriter) error {
 	L := lua.NewState()
 	defer L.Close()
 
-	var cookie strings.Builder
-	for _, c := range req.Cookies() {
-		if cookie.Len() > 0 {
-			cookie.WriteString("; ")
-		}
-		cookie.WriteString(c.String())
-	}
-
 	L.SetGlobal("QUERY_STRING", lua.LString(req.URL.RawQuery))
 	L.SetGlobal("CONTENT_LENGTH", lua.LNumber(req.ContentLength))
 	L.SetGlobal("REQUEST_METHOD", lua.LString(strings.ToUpper(req.Method)))
-	L.SetGlobal("HTTP_COOKIE", lua.LString(cookie.String()))
+	L.SetGlobal("HTTP_COOKIE", lua.LString(getAllCookie(req)))
 	L.SetGlobal("HTTP_USER_AGENT", lua.LString(req.UserAgent()))
 	L.SetGlobal("SCRIPT_NAME", lua.LString(req.URL.Path))
 	L.SetGlobal("REMOTE_ADDR", lua.LString(rxPortNo.ReplaceAllString(req.RemoteAddr, "")))
