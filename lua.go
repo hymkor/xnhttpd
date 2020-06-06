@@ -27,7 +27,7 @@ func callLuaHandler(targetPath string,
 	}
 
 	L.SetGlobal("QUERY_STRING", lua.LString(req.URL.RawQuery))
-	L.SetGlobal("CONTENT_LENGTH", lua.LString(req.ContentLength))
+	L.SetGlobal("CONTENT_LENGTH", lua.LNumber(req.ContentLength))
 	L.SetGlobal("REQUEST_METHOD", lua.LString(strings.ToUpper(req.Method)))
 	L.SetGlobal("HTTP_COOKIE", lua.LString(cookie.String()))
 	L.SetGlobal("HTTP_USER_AGENT", lua.LString(req.UserAgent()))
