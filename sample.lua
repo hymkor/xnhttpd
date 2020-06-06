@@ -27,4 +27,14 @@ print(string.format([[
 </form>
 ]],esc(SCRIPT_NAME),esc(get("a"))))
 
+local counter = cookie("counter")
+if counter then
+    counter = { value= tonumber(counter.value)+1 }
+else
+    counter = { value=1 }
+end
+setcookie("counter",counter.value)
+
+print("counter=" .. counter.value)
+
 print("</body></html>")
