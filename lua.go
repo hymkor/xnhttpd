@@ -7,6 +7,11 @@ import (
 	"github.com/yuin/gopher-lua"
 )
 
+var escapeList = strings.NewReplacer(
+	"&", "&amp;",
+	"<", "&lt;",
+	">", "&gt;")
+
 func callLuaHandler(targetPath string,
 	req *http.Request,
 	w http.ResponseWriter) error {
@@ -60,6 +65,16 @@ func callLuaHandler(targetPath string,
 		val := req.FormValue(key)
 		L.Push(lua.LString(val))
 		return 1
+	}))
+
+	L.SetGlobal("esc", L.NewFunction(func(LL *lua.LState) int {
+		end := LL.GetTop()
+		for i := 1; i <= end; i++ {
+			val := LL.Get(i).String()
+			val = escapeList.Replace(val)
+			L.Push(lua.LString(val))
+		}
+		return end
 	}))
 
 	err := L.DoFile(targetPath)
