@@ -77,6 +77,50 @@ func callLuaHandler(targetPath string,
 		return end
 	}))
 
+	L.SetGlobal("cookie", L.NewFunction(func(LL *lua.LState) int {
+		name := LL.Get(1).String()
+		cookie, err := req.Cookie(name)
+		if err != nil {
+			L.Push(lua.LNil)
+			L.Push(lua.LString(err.Error()))
+			return 2
+		}
+		tbl := L.NewTable()
+		L.SetField(tbl, "name", lua.LString(cookie.Name))
+		L.SetField(tbl, "value", lua.LString(cookie.Value))
+		L.SetField(tbl, "path", lua.LString(cookie.Path))
+		L.SetField(tbl, "domain", lua.LString(cookie.Domain))
+		L.SetField(tbl, "expire", lua.LString(cookie.Expires.String()))
+		L.SetField(tbl, "maxage", lua.LNumber(cookie.MaxAge))
+		if cookie.Secure {
+			L.SetField(tbl, "secure", lua.LTrue)
+		} else {
+			L.SetField(tbl, "secure", lua.LFalse)
+		}
+		L.SetField(tbl, "raw", lua.LString(cookie.Raw))
+		L.Push(tbl)
+		return 1
+	}))
+
+	L.SetGlobal("setcookie", L.NewFunction(func(LL *lua.LState) int {
+		if L.GetTop() < 2 {
+			L.Push(lua.LNil)
+			L.Push(lua.LString("too few arguments"))
+			return 2
+		}
+		cookie := &http.Cookie{
+			Name: L.Get(1).String(),
+		}
+		value := L.Get(2)
+		if tbl, ok := value.(*lua.LTable); ok {
+			cookie.Value = L.GetField(tbl, "value").String()
+		} else {
+			cookie.Value = value.String()
+		}
+		http.SetCookie(w, cookie)
+		return 0
+	}))
+
 	err := L.DoFile(targetPath)
 	if err == nil {
 		w.WriteHeader(http.StatusOK)
