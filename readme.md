@@ -1,7 +1,11 @@
 xnhttpd
 =======
 
-Tiny Web Server to test CGI on localhost.
+xnhttpd is
+
+- Markdown viewer
+- CGI Server
+- Lua Application Server (experimental)
 
 ```
 xnhttpd
@@ -30,5 +34,48 @@ and calls CGI scripts on the current directory.
 
 To use sample [wiki-engine](https://github.com/zetamatta/markdowned_wifky/), open http://127.0.0.1:8000/wiki.pl with web-browser.
 
-By defaults, when the web-browser requests a file whose suffix is `*.md`,
-the built-in markdown text viewer by [goldmark](https://github.com/yuin/goldmark) runs.
+Markdown Viewer
+---------------
+
+When the requested url's suffix ends with `.md` and the file exists, 
+the embedded markdown viewer([goldmark](https://github.com/yuin/goldmark)) runs.
+
+If `{ "markdown":{ "html":true }}` is defined, raw-HTML-tags are available in `*.md`
+
+Lua Application Server
+----------------------
+
+When the requested url's suffix ends with `.lua` and the file exists, 
+the embedded Lua-interpretor([GopherLua](https://github.com/yuin/gopher-lua)) runs.
+```
+print("<html><body>")
+print("<h1>Embedded Lua Test</h1>")
+
+for _,key in pairs{
+    "QUERY_STRING",
+    "CONTENT_LENGTH",
+    "REQUEST_METHOD",
+    "HTTP_COOKIE",
+    "HTTP_USER_AGENT",
+    "SCRIPT_NAME",
+    "REMOTE_ADDR",
+} do
+    print(string.format("<div>%s=%s</div>",esc(key),esc(_G[key])))
+end
+
+print("<hr />")
+
+print(string.format("<div>a=%s</div>",esc(get("a"))))
+
+print(string.format([[
+<form action="%s" method="post">
+<div>New `a` value</div>
+<div>
+<input type="text" name="a" value="%s" />
+<input type="submit" />
+</div>
+</form>
+]],esc(SCRIPT_NAME),esc(get("a"))))
+
+print("</body></html>")
+```
