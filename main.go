@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"path"
 	"path/filepath"
@@ -55,7 +56,12 @@ func findPathInsteadOfDirectory(dir string) string {
 
 func (this *Handler) serveHttp(w http.ResponseWriter, req *http.Request) error {
 	log.Printf("%s %s %s\n", req.RemoteAddr, req.Method, req.URL.Path)
-	targetPath := filepath.Join(this.workDir, filepath.FromSlash(req.URL.Path))
+	targetPath, err := url.QueryUnescape(req.URL.Path)
+	if err != nil {
+		return err
+	}
+	targetPath = filepath.Join(this.workDir, filepath.FromSlash(targetPath))
+
 	stat, err := os.Stat(targetPath)
 	if err != nil {
 		return err
