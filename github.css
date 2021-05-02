@@ -1,6 +1,6 @@
 body {
   font-family: Helvetica, arial, sans-serif;
-  font-size: 14px;
+  /* font-size: 14px; */
   line-height: 1.6;
   padding-top: 10px;
   padding-bottom: 10px;
@@ -35,7 +35,7 @@ h1, h2, h3, h4, h5, h6 {
   position: relative; }
 
 h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
-  background: url("../../images/modules/styleguide/para.png") no-repeat 10px center;
+  /* background: url("../../images/modules/styleguide/para.png") no-repeat 10px center; */
   text-decoration: none; }
 
 h1 tt, h1 code {
@@ -57,11 +57,12 @@ h6 tt, h6 code {
   font-size: inherit; }
 
 h1 {
-  font-size: 28px;
+  /* font-size: 28px; */
+  border-bottom: 1px solid #cccccc;
   color: black; }
 
 h2 {
-  font-size: 24px;
+  /* font-size: 24px; */
   border-bottom: 1px solid #cccccc;
   color: black; }
 
@@ -78,11 +79,11 @@ h6 {
   color: #777777;
   font-size: 14px; }
 
-p, blockquote, ul, ol, dl, li, table, pre {
+p, blockquote, ul, ol, dl, /* li,*/ table, pre {
   margin: 15px 0; }
 
 hr {
-  background: transparent url("../../images/modules/pulls/dirty-shade.png") repeat-x 0 0;
+  /* background: transparent url("../../images/modules/pulls/dirty-shade.png") repeat-x 0 0; */
   border: 0 none;
   color: #cccccc;
   height: 4px;
@@ -266,7 +267,7 @@ pre code {
 
 pre {
   background-color: #f8f8f8;
-  border: 1px solid #cccccc;
+  /* border: 1px solid #cccccc; */
   font-size: 13px;
   line-height: 19px;
   overflow: auto;
