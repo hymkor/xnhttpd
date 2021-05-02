@@ -21,3 +21,7 @@ exit /b
     )
     echo off
     exit /b
+
+:"install"
+    for /F "skip=1" %%I in ('where xnhttpd.exe') do copy /-Y xnhttpd.exe "%%I"
+    exit /b
