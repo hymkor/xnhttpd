@@ -21,7 +21,7 @@ and calls CGI scripts on the current directory.
 
 `sample.json` is a configuration file like below
 
-```
+```json
 {
 	"handler":{
 		".pl":"c:/Program Files/Git/usr/bin/perl.exe"
@@ -47,7 +47,8 @@ Lua Application Server
 
 When the requested url's suffix ends with `.lua` and the file exists, 
 the embedded Lua-interpretor([GopherLua](https://github.com/yuin/gopher-lua)) runs.
-```
+
+```lua
 print("<html><body>")
 print("<h1>Embedded Lua Test</h1>")
 
