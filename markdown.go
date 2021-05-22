@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/extension"
 	goldmarkHtml "github.com/yuin/goldmark/renderer/html"
 )
 
@@ -31,11 +32,15 @@ var markdownReader goldmark.Markdown
 
 func enableHtmlInMarkdown(flag bool) {
 	if flag {
-		markdownReader =
-			goldmark.New(
-				goldmark.WithRendererOptions(goldmarkHtml.WithUnsafe()))
+		markdownReader = goldmark.New(
+			goldmark.WithRendererOptions(
+				goldmarkHtml.WithUnsafe()),
+			goldmark.WithExtensions(
+				extension.Table))
 	} else {
-		markdownReader = goldmark.New()
+		markdownReader = goldmark.New(
+			goldmark.WithExtensions(
+				extension.Table))
 	}
 }
 
