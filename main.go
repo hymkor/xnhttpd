@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -112,7 +113,13 @@ func (this *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+var flagWd = flag.String("C", "", "Working directory")
+
 func mains(args []string) error {
+	if *flagWd != "" {
+		os.Chdir(*flagWd)
+	}
+
 	var handler Handler
 	for _, configFname := range args {
 		fd, err := os.Open(configFname)
@@ -148,7 +155,8 @@ func mains(args []string) error {
 }
 
 func main() {
-	if err := mains(os.Args[1:]); err != nil {
+	flag.Parse()
+	if err := mains(flag.Args()); err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(1)
 	}
