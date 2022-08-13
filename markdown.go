@@ -31,22 +31,18 @@ and <a href="https://gist.github.com/andyferra/2554919">github.css</a>
 
 var markdownReader goldmark.Markdown
 
+var markdownOptions = []goldmark.Option{
+	goldmark.WithExtensions(extension.Table),
+	goldmark.WithExtensions(meta.New(meta.WithTable())),
+	// goldmark.WithRendererOptions(goldmarkHtml.WithHardWraps()),
+}
+
 func enableHtmlInMarkdown(flag bool) {
 	if flag {
-		markdownReader = goldmark.New(
-			goldmark.WithRendererOptions(
-				goldmarkHtml.WithUnsafe()),
-			goldmark.WithExtensions(
-				extension.Table),
-			goldmark.WithExtensions(
-				meta.New(meta.WithTable())))
-	} else {
-		markdownReader = goldmark.New(
-			goldmark.WithExtensions(
-				extension.Table),
-			goldmark.WithExtensions(
-				meta.New(meta.WithTable())))
+		markdownOptions = append(markdownOptions,
+			goldmark.WithRendererOptions(goldmarkHtml.WithUnsafe()))
 	}
+	markdownReader = goldmark.New(markdownOptions...)
 }
 
 func catAsMarkdown(path string, w http.ResponseWriter) error {
