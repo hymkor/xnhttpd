@@ -27,7 +27,8 @@ and calls CGI scripts on the current directory.
 		".pl":"c:/Program Files/Git/usr/bin/perl.exe"
 	},
 	"markdown":{
-		"html":true
+		"html":true,
+		"hardwrap":true
 	}
 }
 ```
