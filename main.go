@@ -20,7 +20,8 @@ import (
 type Config struct {
 	Handler  map[string]string `json:"handler"`
 	Markdown struct {
-		Html bool `json:"html"`
+		Html     bool `json:"html"`
+		HardWrap bool `json:"hardwrap"`
 	} `json:"markdown"`
 }
 
@@ -132,7 +133,7 @@ func mains(args []string) error {
 			return err
 		}
 	}
-	enableHtmlInMarkdown(handler.Config.Markdown.Html)
+	setMarkdownOptions(handler.Config.Markdown.Html, handler.Config.Markdown.HardWrap)
 	handler.notFound = http.NotFoundHandler()
 	var err error
 	handler.workDir, err = os.Getwd()

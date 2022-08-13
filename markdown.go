@@ -34,13 +34,16 @@ var markdownReader goldmark.Markdown
 var markdownOptions = []goldmark.Option{
 	goldmark.WithExtensions(extension.Table),
 	goldmark.WithExtensions(meta.New(meta.WithTable())),
-	// goldmark.WithRendererOptions(goldmarkHtml.WithHardWraps()),
 }
 
-func enableHtmlInMarkdown(flag bool) {
-	if flag {
+func setMarkdownOptions(enableHtml bool, hardwrap bool) {
+	if enableHtml {
 		markdownOptions = append(markdownOptions,
 			goldmark.WithRendererOptions(goldmarkHtml.WithUnsafe()))
+	}
+	if hardwrap {
+		markdownOptions = append(markdownOptions,
+			goldmark.WithRendererOptions(goldmarkHtml.WithHardWraps()))
 	}
 	markdownReader = goldmark.New(markdownOptions...)
 }
@@ -53,7 +56,7 @@ func catAsMarkdown(path string, w http.ResponseWriter) error {
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, htmlHeader, gitHubCss)
 	if markdownReader == nil {
-		enableHtmlInMarkdown(false)
+		setMarkdownOptions(false, false)
 	}
 	err = markdownReader.Convert(source, w)
 
