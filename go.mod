@@ -1,4 +1,4 @@
-module github.com/zetamatta/xnhttpd
+module github.com/hymkor/xnhttpd
 
 go 1.16
 
