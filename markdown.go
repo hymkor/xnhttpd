@@ -32,8 +32,14 @@ and <a href="https://gist.github.com/andyferra/2554919">github.css</a>
 var markdownReader goldmark.Markdown
 
 var markdownOptions = []goldmark.Option{
-	goldmark.WithExtensions(extension.Table),
-	goldmark.WithExtensions(meta.New(meta.WithTable())),
+	goldmark.WithExtensions(
+		extension.Table,
+		extension.NewLinkify(
+			extension.WithLinkifyAllowedProtocols([][]byte{
+				[]byte("http:"),
+				[]byte("https:"),
+			})),
+		meta.New(meta.WithTable())),
 }
 
 func setMarkdownOptions(enableHtml bool, hardwrap bool) {
