@@ -13,6 +13,8 @@ xnhttpd {OPTIONS} [SETTING-JSON-PATH]
     * Change Current directory (default: does not change the directory)
 * -p integer
     * Change the port number to listen (default:8000)
+* -perl
+    * Enable Perl as handler for \*.pl
 
 which starts service on localhost:8000
 and calls CGI scripts on the current directory.
