@@ -97,3 +97,21 @@ print("counter=" .. counter.value)
 
 print("</body></html>")
 ```
+
+Install
+-------
+
+Download the binary package from [Releases](https://github.com/hymkor/xnhttpd/releases) and extract the executable.
+
+### for scoop-installer
+
+```
+scoop install https://raw.githubusercontent.com/hymkor/xnhttpd/master/xnhttpd.json
+```
+
+or
+
+```
+scoop bucket add hymkor https://github.com/hymkor/scoop-bucket
+scoop install xnhttpd
+```
