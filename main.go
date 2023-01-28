@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"os/exec"
 	"path"
 	"path/filepath"
 	"strconv"
@@ -117,6 +118,7 @@ func (this *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 var (
 	flagWd   = flag.String("C", "", "Working directory")
 	flagPort = flag.Uint64("p", 8000, "Port number")
+	flagPerl = flag.Bool("perl", false, "Enable Perl as handler for *.pl")
 )
 
 func mains(args []string) error {
@@ -136,6 +138,17 @@ func mains(args []string) error {
 			return err
 		}
 	}
+	if *flagPerl {
+		perlFullPath, err := exec.LookPath("perl")
+		if err != nil {
+			return err
+		}
+		if handler.Config.Handler == nil {
+			handler.Config.Handler = make(map[string]string)
+		}
+		handler.Config.Handler[".pl"] = perlFullPath
+	}
+
 	setMarkdownOptions(handler.Config.Markdown.Html, handler.Config.Markdown.HardWrap)
 	handler.notFound = http.NotFoundHandler()
 	var err error
