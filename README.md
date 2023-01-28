@@ -10,13 +10,17 @@ xnhttpd {OPTIONS} [SETTING-JSON-PATH]
 ```
 
 * -C string
-    * Change Current directory (default: does not change the directory)
-* -p integer
-    * Change the port number to listen (default:8000)
+    * Working directory
+* -hardwrap
+    * Enable hard wrap in \*.md
+* -html
+    * Enable raw htmls in \*.md
+* -index string
+    * the default page when URL is directory (default "index.html,README.md,INDEX.md")
+* -p uint
+    * Port number (default 8000)
 * -perl
     * Enable Perl as handler for \*.pl
-* -index string
-    *  the default page when URL is directory (default "index.html,README.md,INDEX.md")
 
 which starts service on localhost:8000
 and calls CGI scripts on the current directory.
