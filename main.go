@@ -23,6 +23,8 @@ var (
 	flagPerl  = flag.Bool("perl", false, "Enable Perl as handler for *.pl")
 	flagPort  = flag.Uint64("p", 8000, "Port number")
 	flagWd    = flag.String("C", "", "Working directory")
+	flagHtml  = flag.Bool("html", false, "Enable raw htmls in *.md")
+	flagWrap  = flag.Bool("hardwrap", false, "Enable hard wrap in *.md")
 )
 
 type Config struct {
@@ -148,6 +150,12 @@ func mains(args []string) error {
 			handler.Config.Handler = make(map[string]string)
 		}
 		handler.Config.Handler[".pl"] = perlFullPath
+	}
+	if *flagHtml {
+		handler.Config.Markdown.Html = true
+	}
+	if *flagWrap {
+		handler.Config.Markdown.HardWrap = true
 	}
 
 	setMarkdownOptions(handler.Config.Markdown.Html, handler.Config.Markdown.HardWrap)
