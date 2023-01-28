@@ -13,6 +13,7 @@ import (
 	"os/exec"
 	"path"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -180,8 +181,16 @@ func mains(args []string) error {
 	return closeErr
 }
 
+var version string
+
 func main() {
 	flag.Parse()
+	fmt.Fprintf(os.Stderr, "%s %s-%s-%s by %s\n",
+		filepath.Base(os.Args[0]),
+		version,
+		runtime.GOOS,
+		runtime.GOARCH,
+		runtime.Version())
 	if err := mains(flag.Args()); err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(1)
