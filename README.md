@@ -6,8 +6,13 @@ xnhttpd
 - Lua Application Server (experimental)
 
 ```
-xnhttpd [-C CURRENT-DIRECTORY] [SETTING-JSON-PATH]
+xnhttpd {OPTIONS} [SETTING-JSON-PATH]
 ```
+
+* -C string
+    * Change Current directory (default: does not change the directory)
+* -p integer
+    * Change the port number to listen (default:8000)
 
 which starts service on localhost:8000
 and calls CGI scripts on the current directory.
