@@ -18,6 +18,13 @@ import (
 	"time"
 )
 
+var (
+	flagIndex = flag.String("index", "index.html,README.md,INDEX.md", "the default page when URL is directory")
+	flagPerl  = flag.Bool("perl", false, "Enable Perl as handler for *.pl")
+	flagPort  = flag.Uint64("p", 8000, "Port number")
+	flagWd    = flag.String("C", "", "Working directory")
+)
+
 type Config struct {
 	Handler  map[string]string `json:"handler"`
 	Markdown struct {
@@ -48,7 +55,7 @@ var fileServeSuffix = map[string]string{
 }
 
 func findPathInsteadOfDirectory(dir string) string {
-	for _, fname := range []string{"index.html", "readme.md"} {
+	for _, fname := range strings.Split(*flagIndex, ",") {
 		path := filepath.Join(dir, fname)
 		if _, err := os.Stat(path); err == nil {
 			return path
@@ -114,12 +121,6 @@ func (this *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		log.Printf("%s\n", err.Error())
 	}
 }
-
-var (
-	flagWd   = flag.String("C", "", "Working directory")
-	flagPort = flag.Uint64("p", 8000, "Port number")
-	flagPerl = flag.Bool("perl", false, "Enable Perl as handler for *.pl")
-)
 
 func mains(args []string) error {
 	if *flagWd != "" {
