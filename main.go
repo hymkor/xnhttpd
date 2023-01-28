@@ -114,7 +114,10 @@ func (this *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-var flagWd = flag.String("C", "", "Working directory")
+var (
+	flagWd   = flag.String("C", "", "Working directory")
+	flagPort = flag.Uint64("p", 8000, "Port number")
+)
 
 func mains(args []string) error {
 	if *flagWd != "" {
@@ -141,7 +144,7 @@ func mains(args []string) error {
 		return err
 	}
 	service := &http.Server{
-		Addr:           ":8000",
+		Addr:           ":" + strconv.FormatUint(*flagPort, 10),
 		Handler:        &handler,
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
