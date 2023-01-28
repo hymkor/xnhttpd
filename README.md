@@ -1,25 +1,18 @@
 xnhttpd
 =======
 
-xnhttpd is
-
+- CGI Server for test uses instead of [AN HTTPD](https://ja.wikipedia.org/wiki/AN_HTTPD)
 - Markdown viewer
-- CGI Server
 - Lua Application Server (experimental)
 
 ```
-xnhttpd
+xnhttpd [-C CURRENT-DIRECTORY] [SETTING-JSON-PATH]
 ```
 
-or
-
-```
-xnhttpd sample.json
-```
 which starts service on localhost:8000
 and calls CGI scripts on the current directory.
 
-`sample.json` is a configuration file like below
+The JSON for setting is like below.
 
 ```json
 {
