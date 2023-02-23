@@ -273,6 +273,10 @@ pre {
   overflow: auto;
   padding: 6px 10px;
   border-radius: 3px; }
-  pre code, pre tt {
-    background-color: transparent;
-    border: none; }
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none; }
+
+div.footnotes{
+  font-size: .9em; }
