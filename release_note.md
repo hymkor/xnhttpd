@@ -1,3 +1,8 @@
+- On markdown, support footnote
+  - Enable extension.Footnote of [goldmark] and modify CSS minimum (font-size: .9em)
+
+[goldmark]: https://github.com/yuin/goldmark
+
 v0.6.0
 ======
 Jan 28, 2023
