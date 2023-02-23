@@ -28,6 +28,9 @@ package:
 	$(SET) "GOOS=windows" && $(SET) "GOARCH=386"   && $(MAKE) _package
 	$(SET) "GOOS=windows" && $(SET) "GOARCH=amd64" && $(MAKE) _package
 
+release:
+	gh release create -d -t $(VERSION) $(VERSION) $(wildcard $(NAME)-$(VERSION)-*.zip)
+
 clean:
 	$(DEL) *.zip $(NAME)$(EXE)
 
