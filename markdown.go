@@ -9,6 +9,7 @@ import (
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark-meta"
 	"github.com/yuin/goldmark/extension"
+	"github.com/yuin/goldmark/parser"
 	goldmarkHtml "github.com/yuin/goldmark/renderer/html"
 )
 
@@ -32,6 +33,8 @@ and <a href="https://gist.github.com/andyferra/2554919">github.css</a>
 var markdownReader goldmark.Markdown
 
 var markdownOptions = []goldmark.Option{
+	goldmark.WithParserOptions(
+		parser.WithAutoHeadingID()),
 	goldmark.WithExtensions(
 		extension.Table,
 		extension.NewLinkify(
