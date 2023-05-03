@@ -1,6 +1,12 @@
+v0.7.1
+======
+May 3, 2023
+
+- Enable parser.WithAutoHeadingID() on [goldmark]
+
 v0.7.0
 ======
-Feb.23, 2023
+Feb 23, 2023
 
 - On markdown, support footnote
   - Enable extension.Footnote of [goldmark] and modify CSS minimum (font-size: .9em)
