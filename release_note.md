@@ -1,3 +1,7 @@
+v0.7.2
+======
+May 4, 2023
+
 - JSON text for configuration can be read from stdin by giving argument `-`
 
 v0.7.1
