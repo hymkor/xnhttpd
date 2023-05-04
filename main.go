@@ -132,9 +132,15 @@ func mains(args []string) error {
 
 	var handler Handler
 	for _, configFname := range args {
-		fd, err := os.Open(configFname)
-		if err != nil {
-			return err
+		var fd io.ReadCloser
+		var err error
+		if configFname == "-" {
+			fd = io.NopCloser(os.Stdin)
+		} else {
+			fd, err = os.Open(configFname)
+			if err != nil {
+				return err
+			}
 		}
 		err = handler.Config.Read(fd)
 		fd.Close()
