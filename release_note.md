@@ -1,3 +1,9 @@
+v0.7.3
+======
+May 7, 2023
+
+- Add new option: -plaintext
+
 v0.7.2
 ======
 May 4, 2023
