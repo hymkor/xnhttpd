@@ -20,12 +20,13 @@ import (
 )
 
 var (
-	flagIndex = flag.String("index", "index.html,README.md,INDEX.md", "the default page when URL is directory")
-	flagPerl  = flag.Bool("perl", false, "Enable Perl as handler for *.pl")
-	flagPort  = flag.Uint64("p", 8000, "Port number")
-	flagWd    = flag.String("C", "", "Working directory")
-	flagHtml  = flag.Bool("html", false, "Enable raw htmls in *.md")
-	flagWrap  = flag.Bool("hardwrap", false, "Enable hard wrap in *.md")
+	flagIndex     = flag.String("index", "index.html,README.md,INDEX.md", "the default page when URL is directory")
+	flagPerl      = flag.Bool("perl", false, "Enable Perl as handler for *.pl")
+	flagPort      = flag.Uint64("p", 8000, "Port number")
+	flagWd        = flag.String("C", "", "Working directory")
+	flagHtml      = flag.Bool("html", false, "Enable raw htmls in *.md")
+	flagWrap      = flag.Bool("hardwrap", false, "Enable hard wrap in *.md")
+	flagPlainText = flag.String("plaintext", "", "output as plaintext(e.g. `-plaintext .cpp.h`)")
 )
 
 type Config struct {
@@ -55,6 +56,7 @@ var fileServeSuffix = map[string]string{
 	".jpg":  "image/jpg",
 	".png":  "image/jpg",
 	".html": "text/html",
+	".txt":  "text/plain",
 }
 
 func findPathInsteadOfDirectory(dir string) string {
@@ -163,6 +165,18 @@ func mains(args []string) error {
 	}
 	if *flagWrap {
 		handler.Config.Markdown.HardWrap = true
+	}
+	if t := *flagPlainText; t != "" {
+		for {
+			first, next, found := strings.Cut(t, ".")
+			if first != "" {
+				fileServeSuffix["."+first] = "text/plain"
+			}
+			if !found {
+				break
+			}
+			t = next
+		}
 	}
 
 	setMarkdownOptions(handler.Config.Markdown.Html, handler.Config.Markdown.HardWrap)
