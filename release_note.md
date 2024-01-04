@@ -1,3 +1,5 @@
+- markdown: enable [Task list items](https://github.github.com/gfm/#task-list-items-extension-)
+
 v0.7.3
 ======
 May 7, 2023
