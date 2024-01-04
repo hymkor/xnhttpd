@@ -1,3 +1,7 @@
+v0.7.4
+======
+Jan 5, 2024
+
 - markdown: enable [Task list items](https://github.github.com/gfm/#task-list-items-extension-)
 
 v0.7.3
