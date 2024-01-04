@@ -42,6 +42,7 @@ var markdownOptions = []goldmark.Option{
 				[]byte("http:"),
 				[]byte("https:"),
 			})),
+		extension.TaskList,
 		extension.Footnote,
 		meta.New(meta.WithTable())),
 }
