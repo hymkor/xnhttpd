@@ -103,7 +103,13 @@ Install
 
 Download the binary package from [Releases](https://github.com/hymkor/xnhttpd/releases) and extract the executable.
 
-### for scoop-installer
+### go install
+
+```
+go install github.com/hymkor/xnhttpd
+```
+
+### scoop-installer
 
 ```
 scoop install https://raw.githubusercontent.com/hymkor/xnhttpd/master/xnhttpd.json
