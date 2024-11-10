@@ -14,7 +14,7 @@ VERSION:=$(shell git describe --tags 2>$(NUL) || echo v0.0.0)
 GOOPT:=-ldflags "-s -w -X main.version=$(VERSION)"
 EXE:=$(shell go env GOEXE)
 
-all:
+all: $(wildcard *.go) github.css
 	go fmt
 	$(SET) "CGO_ENABLED=0" && go build $(GOOPT)
 
@@ -31,11 +31,14 @@ dist:
 	$(SET) "GOOS=windows" && $(SET) "GOARCH=386"   && $(MAKE) _dist
 	$(SET) "GOOS=windows" && $(SET) "GOARCH=amd64" && $(MAKE) _dist
 
+github.css :
+	curl https://raw.githubusercontent.com/sindresorhus/github-markdown-css/gh-pages/github-markdown-light.css > github.css
+
 release:
 	gh release create -d --notes "" -t $(VERSION) $(VERSION) $(wildcard $(NAME)-$(VERSION)-*.zip)
 
 clean:
-	$(DEL) *.zip $(NAME)$(EXE)
+	$(DEL) $(NAME)$(EXE) github.css
 
 manifest:
 	make-scoop-manifest *-windows-*.zip > $(NAME).json
