@@ -1,3 +1,5 @@
+- Change the stylesheet for markdown to https://github.com/sindresorhus/generate-github-markdown-css
+
 v0.7.4
 ======
 Jan 5, 2024
