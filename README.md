@@ -39,7 +39,7 @@ The JSON for setting is like below.
 }
 ```
 
-To use sample [wiki-engine](https://github.com/hymkor/markdowned_wifky/), open http://127.0.0.1:8000/wiki.pl with web-browser.
+To use sample [wiki-engine](https://github.com/hymkor/markdowned_wifky/), open `http://127.0.0.1:8000/wiki.pl` with web-browser.
 
 Markdown Viewer
 ---------------
