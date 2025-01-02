@@ -26,7 +26,8 @@ var (
 	flagWd        = flag.String("C", "", "Working directory")
 	flagHtml      = flag.Bool("html", false, "Enable raw htmls in *.md")
 	flagWrap      = flag.Bool("hardwrap", false, "Enable hard wrap in *.md")
-	flagPlainText = flag.String("plaintext", "", "output as plaintext(e.g. `-plaintext .cpp.h`)")
+	flagPlainText = flag.String("plaintext", "", "output files with specified `suffixes` as plaintext(e.g., -plaintext .cpp.h)")
+	flatOctet     = flag.String("octet", "", "output files with specified `suffixes` as application/octet-stream(e.g., `-octet .xlsx.pdf`)")
 )
 
 type Config struct {
@@ -176,6 +177,18 @@ func mains(args []string) error {
 				break
 			}
 			t = next
+		}
+	}
+	if b := *flatOctet; b != "" {
+		for {
+			first, next, found := strings.Cut(b, ".")
+			if first != "" {
+				fileServeSuffix["."+first] = "application/octet-stream"
+			}
+			if !found {
+				break
+			}
+			b = next
 		}
 	}
 
