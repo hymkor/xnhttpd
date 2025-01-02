@@ -1,3 +1,5 @@
+- Added the `-octet` option to specify file extensions that should be output with the MIME type application/octet-stream.
+
 v0.8.0
 ======
 Nov 10, 2024
