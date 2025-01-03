@@ -71,7 +71,7 @@ func findPathInsteadOfDirectory(dir string) string {
 }
 
 func (this *Handler) serveHttp(w http.ResponseWriter, req *http.Request) error {
-	log.Printf("%s %s %s\n", req.RemoteAddr, req.Method, req.URL.Path)
+	log.Printf("%s %s \"%s\"\n", req.RemoteAddr, req.Method, req.URL.Path)
 	targetPath, err := url.QueryUnescape(req.URL.Path)
 	if err != nil {
 		return err
