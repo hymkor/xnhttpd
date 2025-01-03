@@ -206,6 +206,7 @@ func mains(args []string) error {
 		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
+
 	err = service.ListenAndServe()
 	closeErr := service.Close()
 	if err != nil {
@@ -218,6 +219,10 @@ var version string
 
 func main() {
 	flag.Parse()
+	if wd, err := os.Getwd(); err == nil {
+		fmt.Printf("\x1B]0;xnhttpd on %s\x1B\\\r",
+			filepath.Base(wd))
+	}
 	fmt.Fprintf(os.Stderr, "%s %s-%s-%s by %s\n",
 		filepath.Base(os.Args[0]),
 		version,
