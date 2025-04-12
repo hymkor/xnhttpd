@@ -57,6 +57,7 @@ var fileServeSuffix = map[string]string{
 	".jpg":  "image/jpg",
 	".png":  "image/jpg",
 	".html": "text/html",
+	".htm":  "text/html",
 	".txt":  "text/plain",
 }
 
@@ -89,7 +90,7 @@ func (this *Handler) serveHttp(w http.ResponseWriter, req *http.Request) error {
 		}
 	}
 
-	suffix := path.Ext(targetPath)
+	suffix := strings.ToLower(path.Ext(targetFilePath))
 	if interpreter, ok := this.Config.Handler[suffix]; ok {
 		interpreter = filepath.FromSlash(interpreter)
 		if err := callCgi(interpreter, targetPath, w, req,
