@@ -1,6 +1,8 @@
 - Added the `-octet` option to specify file extensions that should be output with the MIME type application/octet-stream.
 - Set the Window's title to the last part of the current directory path if possible.
 - On the log, enclose the path part of the URL with double-quatations
+- Made file extension matching in request paths case-insensitive
+- Added `PATH_INFO` support for CGI requests experimentally
 
 v0.8.0
 ======
