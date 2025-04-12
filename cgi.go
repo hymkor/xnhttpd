@@ -13,7 +13,12 @@ import (
 
 var rxPortNo = regexp.MustCompile(`:\d+$`)
 
-func callCgi(interpreter, script string,
+type CgiParam struct {
+	PathInfo   string
+	ScriptName string
+}
+
+func (C CgiParam) callCgi(interpreter, script string,
 	w http.ResponseWriter,
 	req *http.Request,
 	logger func(string), cgierr io.Writer) error {
@@ -38,7 +43,8 @@ func callCgi(interpreter, script string,
 		"REQUEST_METHOD=" + strings.ToUpper(req.Method),
 		"HTTP_COOKIE=" + cookie.String(),
 		"HTTP_USER_AGENT=" + req.UserAgent(),
-		"SCRIPT_NAME=" + req.URL.Path,
+		"SCRIPT_NAME=" + C.ScriptName, // req.URL.Path,
+		"PATH_INFO=" + C.PathInfo,
 		"REMOTE_ADDR=" + rxPortNo.ReplaceAllString(req.RemoteAddr, ""),
 	}
 	cmd.Env = append(env, os.Environ()...)

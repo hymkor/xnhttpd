@@ -77,15 +77,27 @@ func (this *Handler) serveHttp(w http.ResponseWriter, req *http.Request) error {
 	if err != nil {
 		return err
 	}
-	targetPath = filepath.Join(this.workDir, filepath.FromSlash(targetPath))
+	orgTargetPath := targetPath
+	var targetFilePath string
+	var stat os.FileInfo
+	// use_path_info := false
+	for {
+		targetFilePath = filepath.Join(this.workDir, filepath.FromSlash(targetPath))
 
-	stat, err := os.Stat(targetPath)
-	if err != nil {
-		return err
+		stat, err = os.Stat(targetFilePath)
+		if err == nil {
+			break
+		}
+		if !os.IsNotExist(err) {
+			return err
+		}
+		targetPath = path.Dir(targetPath)
+		// use_path_info = true
 	}
+	path_info := orgTargetPath[len(targetPath):]
 	if stat.IsDir() {
-		targetPath = findPathInsteadOfDirectory(targetPath)
-		if targetPath == "" {
+		targetFilePath = findPathInsteadOfDirectory(targetFilePath)
+		if targetFilePath == "" {
 			return err
 		}
 	}
@@ -93,14 +105,18 @@ func (this *Handler) serveHttp(w http.ResponseWriter, req *http.Request) error {
 	suffix := strings.ToLower(path.Ext(targetFilePath))
 	if interpreter, ok := this.Config.Handler[suffix]; ok {
 		interpreter = filepath.FromSlash(interpreter)
-		if err := callCgi(interpreter, targetPath, w, req,
+		cgiParam := &CgiParam{
+			PathInfo:   path_info,
+			ScriptName: targetPath,
+		}
+		if err := cgiParam.callCgi(interpreter, targetFilePath, w, req,
 			func(s string) { log.Println(s) }, os.Stderr); err != nil {
 			return err
 		}
 		return nil
 	}
 	if contentType, ok := fileServeSuffix[suffix]; ok {
-		fd, err := os.Open(targetPath)
+		fd, err := os.Open(targetFilePath)
 		if err != nil {
 			return err
 		}
@@ -114,10 +130,10 @@ func (this *Handler) serveHttp(w http.ResponseWriter, req *http.Request) error {
 		return nil
 	}
 	if strings.EqualFold(suffix, ".md") {
-		return catAsMarkdown(targetPath, w)
+		return catAsMarkdown(targetFilePath, w)
 	}
 	if strings.EqualFold(suffix, ".lua") {
-		return callLuaHandler(targetPath, req, w)
+		return callLuaHandler(targetFilePath, req, w)
 	}
 	return fmt.Errorf("%s: not support suffix", suffix)
 }
