@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	_ "embed"
 	"fmt"
 	"io/ioutil"
@@ -77,13 +78,17 @@ func catAsMarkdown(path string, w http.ResponseWriter) error {
 	if err != nil {
 		return err
 	}
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, htmlHeader, gitHubCss)
 	if markdownReader == nil {
 		setMarkdownOptions(false, false)
 	}
-	err = markdownReader.Convert(source, w)
-
+	var buffer bytes.Buffer
+	err = markdownReader.Convert(source, &buffer)
+	if err != nil {
+		return err
+	}
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, htmlHeader, gitHubCss)
+	buffer.WriteTo(w)
 	fmt.Fprintln(w, htmlFooter)
 	return err
 }
