@@ -3,6 +3,7 @@
 - On the log, enclose the path part of the URL with double-quatations
 - Made file extension matching in request paths case-insensitive
 - Added `PATH_INFO` support for CGI requests experimentally
+- Fixed: Avoided duplicate WriteHeader calls in the HTTP handler, which caused runtime warnings and broken connections when markdown rendering failed
 
 v0.8.0
 ======
