@@ -1,7 +1,7 @@
 {
 	"handler":{
-		".pl":"c:/Program Files/Git/usr/bin/perl.exe",
-		".cgi":"c:/Program Files/Git/usr/bin/perl.exe"
+		".pl":"perl",
+		".cgi":"perl"
 	},
 	"markdown":{
 		"html":true,
