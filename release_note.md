@@ -8,6 +8,7 @@ May 30, 2025
 - Made file extension matching in request paths case-insensitive.
 - Added experimental support for the `PATH_INFO` environment variable in CGI requests.
 - Fixed: Avoided duplicate `WriteHeader` calls in the HTTP handler, which previously caused runtime warnings and broken connections when markdown rendering failed.
+- Show detailed error message in response only for localhost requests
 
 v0.8.0
 ======
