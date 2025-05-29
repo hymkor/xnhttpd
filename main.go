@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -141,10 +142,32 @@ func (this *Handler) serveHttp(w http.ResponseWriter, req *http.Request) error {
 	return fmt.Errorf("%s: not support suffix", suffix)
 }
 
+// hideErrorUnlessSafe returns the error message only if the request is from localhost.
+// Otherwise, it returns a generic "Internal Server Error" to avoid exposing sensitive details.
+func hideErrorUnlessSafe(req *http.Request, err error) string {
+	const internalServerError = "Internal Server Error"
+	if err == nil {
+		return internalServerError
+	}
+	host, _, splitErr := net.SplitHostPort(req.RemoteAddr)
+	if splitErr != nil {
+		return internalServerError
+	}
+	ip := net.ParseIP(host)
+	if !ip.IsLoopback() {
+		return internalServerError
+	}
+	return err.Error()
+}
+
 func (this *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	if err := this.serveHttp(w, req); err != nil {
-		this.notFound.ServeHTTP(w, req)
-		log.Printf("%s\n", err.Error())
+		log.Printf("%s %s \"%s\" %s\n", req.RemoteAddr, req.Method, req.URL.Path, err.Error())
+		if os.IsNotExist(err) {
+			this.notFound.ServeHTTP(w, req)
+		} else {
+			http.Error(w, hideErrorUnlessSafe(req, err), http.StatusInternalServerError)
+		}
 	}
 }
 
