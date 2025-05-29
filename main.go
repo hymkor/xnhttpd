@@ -115,6 +115,9 @@ func (this *Handler) serveHttp(w http.ResponseWriter, req *http.Request) error {
 		}
 		return nil
 	}
+	if path_info != "" {
+		return os.ErrNotExist
+	}
 	if contentType, ok := fileServeSuffix[suffix]; ok {
 		fd, err := os.Open(targetFilePath)
 		if err != nil {
