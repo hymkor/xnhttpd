@@ -1,121 +1,125 @@
 xnhttpd
 =======
 
-- CGI Server for test uses instead of [AN HTTPD](https://ja.wikipedia.org/wiki/AN_HTTPD)
+- A simple CGI server for testing, as an alternative to [AN HTTPD](https://ja.wikipedia.org/wiki/AN_HTTPD)
 - Markdown viewer
-- Lua Application Server (experimental)
+- Experimental Lua application server
 
 ```
 xnhttpd {OPTIONS} [SETTING-JSON-PATH]
 ```
 
-* -C string
-    * Working directory
-* -hardwrap
-    * Enable hard wrap in \*.md
-* -html
-    * Enable raw htmls in \*.md
-* -index string
-    * the default page when URL is directory (default "index.html,README.md,INDEX.md")
-* -p uint
-    * Port number (default 8000)
-* -perl
-    * Enable Perl as handler for \*.pl
+Options
+-------
 
-which starts service on localhost:8000
-and calls CGI scripts on the current directory.
+- `-C string`
+  Working directory
 
-The JSON for setting is like below.
+- `-hardwrap`
+  Enable hard wrap in `*.md`
+
+- `-html`
+  Enable raw HTML in `*.md`
+
+- `-index string`
+  Default page when the URL points to a directory (default: `"index.html,README.md,INDEX.md"`)
+
+- `-p uint`
+  Port number (default: `8000`)
+
+- `-perl`
+  Enable Perl as a handler for `*.pl`
+
+This starts a local server on `localhost:8000` and allows CGI scripts to run from the current directory.
+
+## Example Setting JSON
 
 ```json
 {
-	"handler":{
-		".pl":"c:/Program Files/Git/usr/bin/perl.exe"
-	},
-	"markdown":{
-		"html":true,
-		"hardwrap":true
-	}
+  "handler": {
+    ".pl": "c:/Program Files/Git/usr/bin/perl.exe"
+  },
+  "markdown": {
+    "html": true,
+    "hardwrap": true
+  }
 }
 ```
 
-To use sample [wiki-engine](https://github.com/hymkor/markdowned_wifky/), open `http://127.0.0.1:8000/wiki.pl` with web-browser.
+To try the sample [wiki engine](https://github.com/hymkor/markdowned_wifky/), open [`http://127.0.0.1:8000/wiki.pl`](http://127.0.0.1:8000/wiki.pl) in your browser.
 
-Markdown Viewer
----------------
+---
 
-When the requested url's suffix ends with `.md` and the file exists, 
-the embedded markdown viewer([goldmark](https://github.com/yuin/goldmark)) runs.
+## Markdown Viewer
 
-If `{ "markdown":{ "html":true }}` is defined, raw-HTML-tags are available in `*.md`
+When a requested URL ends with `.md` and the file exists, the embedded Markdown viewer ([goldmark](https://github.com/yuin/goldmark)) renders it.
 
-Lua Application Server
-----------------------
+If `"html": true` is set in the JSON config, raw HTML tags are allowed in Markdown files.
 
-When the requested url's suffix ends with `.lua` and the file exists, 
-the embedded Lua-interpretor([GopherLua](https://github.com/yuin/gopher-lua)) runs.
+---
+
+## Lua Application Server (Experimental)
+
+When a requested URL ends with `.lua` and the file exists, the embedded Lua interpreter ([GopherLua](https://github.com/yuin/gopher-lua)) runs the script.
+
+Example:
 
 ```lua
 print("<html><body>")
 print("<h1>Embedded Lua Test</h1>")
 
-for _,key in pairs{
-    "QUERY_STRING",
-    "CONTENT_LENGTH",
-    "REQUEST_METHOD",
-    "HTTP_COOKIE",
-    "HTTP_USER_AGENT",
-    "SCRIPT_NAME",
-    "REMOTE_ADDR",
+for _, key in pairs{
+  "QUERY_STRING", "CONTENT_LENGTH", "REQUEST_METHOD",
+  "HTTP_COOKIE", "HTTP_USER_AGENT", "SCRIPT_NAME", "REMOTE_ADDR"
 } do
-    print(string.format("<div>%s=%s</div>",esc(key),esc(_G[key])))
+  print(string.format("<div>%s=%s</div>", esc(key), esc(_G[key])))
 end
 
 print("<hr />")
 
-print(string.format("<div>a=%s</div>",esc(get("a"))))
+print(string.format("<div>a=%s</div>", esc(get("a"))))
 
 print(string.format([[
 <form action="%s" method="post">
-<div>New `a` value</div>
-<div>
-<input type="text" name="a" value="%s" />
-<input type="submit" />
-</div>
+  <div>New `a` value</div>
+  <div>
+    <input type="text" name="a" value="%s" />
+    <input type="submit" />
+  </div>
 </form>
-]],esc(SCRIPT_NAME),esc(get("a"))))
+]], esc(SCRIPT_NAME), esc(get("a"))))
 
 local counter = cookie("counter")
 if counter and counter.value then
-    counter = { value= tonumber(counter.value)+1 }
+  counter = { value = tonumber(counter.value) + 1 }
 else
-    counter = { value=1 }
+  counter = { value = 1 }
 end
-setcookie("counter",counter.value)
+setcookie("counter", counter.value)
 
 print("counter=" .. counter.value)
-
 print("</body></html>")
 ```
 
-Install
--------
+## Installation
 
-Download the binary package from [Releases](https://github.com/hymkor/xnhttpd/releases) and extract the executable.
+### Download
 
-### go install
+Download a binary from the [Releases](https://github.com/hymkor/xnhttpd/releases) page and extract the executable.
+
+### Via `go install`
 
 ```
-go install github.com/hymkor/xnhttpd
+go install github.com/hymkor/xnhttpd@latest
 ```
 
-### scoop-installer
+### Via Scoop
 
 ```
 scoop install https://raw.githubusercontent.com/hymkor/xnhttpd/master/xnhttpd.json
 ```
 
-or
+or:
 
 ```
 scoop bucket add hymkor https://github.com/hymkor/scoop-bucket
@@ -127,7 +131,7 @@ Author
 
 - [hymkor (HAYAMA Kaoru)](https://github.com/hymkor)
 
-LICENSE
+License
 -------
 
-- [MIT LICENSE](./LICENSE)
+- [MIT License](./LICENSE)
