@@ -1,9 +1,9 @@
-- Added the `-octet` option to specify file extensions that should be output with the MIME type application/octet-stream.
-- Set the Window's title to the last part of the current directory path if possible.
-- On the log, enclose the path part of the URL with double-quatations
-- Made file extension matching in request paths case-insensitive
-- Added `PATH_INFO` support for CGI requests experimentally
-- Fixed: Avoided duplicate WriteHeader calls in the HTTP handler, which caused runtime warnings and broken connections when markdown rendering failed
+* Added the `-octet` option to specify file extensions that should be served with the MIME type `application/octet-stream`.
+* Set the window title to the last component of the current directory path, if possible.
+* Enclosed the path part of the requested URL in double quotes in the log output.
+* Made file extension matching in request paths case-insensitive.
+* Added experimental support for the `PATH_INFO` environment variable in CGI requests.
+* Fixed: Avoided duplicate `WriteHeader` calls in the HTTP handler, which previously caused runtime warnings and broken connections when markdown rendering failed.
 
 v0.8.0
 ======
