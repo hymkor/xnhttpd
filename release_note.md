@@ -1,3 +1,7 @@
+v0.9.0
+======
+May 30, 2025
+
 - Added the `-octet` option to specify file extensions that should be served with the MIME type `application/octet-stream`.
 - Set the window title to the last component of the current directory path, if possible.
 - Enclosed the path part of the requested URL in double quotes in the log output.
