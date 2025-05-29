@@ -121,3 +121,13 @@ or
 scoop bucket add hymkor https://github.com/hymkor/scoop-bucket
 scoop install xnhttpd
 ```
+
+Author
+------
+
+- [hymkor (HAYAMA Kaoru)](https://github.com/hymkor)
+
+LICENSE
+-------
+
+- [MIT LICENSE](./LICENSE)
