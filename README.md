@@ -32,7 +32,8 @@ Options
 
 This starts a local server on `localhost:8000` and allows CGI scripts to run from the current directory.
 
-## Example Setting JSON
+Example Setting JSON
+--------------------
 
 ```json
 {
@@ -48,17 +49,17 @@ This starts a local server on `localhost:8000` and allows CGI scripts to run fro
 
 To try the sample [wiki engine](https://github.com/hymkor/markdowned_wifky/), open [`http://127.0.0.1:8000/wiki.pl`](http://127.0.0.1:8000/wiki.pl) in your browser.
 
----
+Features
+--------
 
-## Markdown Viewer
+### Markdown Viewer
 
 When a requested URL ends with `.md` and the file exists, the embedded Markdown viewer ([goldmark](https://github.com/yuin/goldmark)) renders it.
 
 If `"html": true` is set in the JSON config, raw HTML tags are allowed in Markdown files.
 
----
 
-## Lua Application Server (Experimental)
+### Lua Application Server (Experimental)
 
 When a requested URL ends with `.lua` and the file exists, the embedded Lua interpreter ([GopherLua](https://github.com/yuin/gopher-lua)) runs the script.
 
@@ -101,7 +102,8 @@ print("counter=" .. counter.value)
 print("</body></html>")
 ```
 
-## Installation
+Installation
+------------
 
 ### Download
 
