@@ -57,7 +57,7 @@ func (s *ids) Generate(value []byte, kind ast.NodeKind) []byte {
 	}
 	if len(result) == 0 {
 		if kind == ast.KindHeading {
-			result = []byte("xheading")
+			result = []byte("heading")
 		} else {
 			result = []byte("id")
 		}
