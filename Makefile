@@ -35,7 +35,7 @@ github.css :
 	curl https://raw.githubusercontent.com/sindresorhus/github-markdown-css/gh-pages/github-markdown-light.css > github.css
 
 release:
-	gh release create -d --notes "" -t $(VERSION) $(VERSION) $(wildcard $(NAME)-$(VERSION)-*.zip)
+	goawk -f latest-notes.awk release_note*.md | gh release create -d --notes-file - -t $(VERSION) $(VERSION) $(wildcard $(NAME)-$(VERSION)-*.zip)
 
 clean:
 	$(DEL) $(NAME)$(EXE) github.css
