@@ -1,3 +1,6 @@
+- Fix the issue where non-alphanumeric single-byte characters in headings were included in IDs, making them incompatible with GitHub.
+- Fix the issue where, when a heading contained no characters usable for an ID, the placeholder `xheading` was used instead of `heading`.
+
 v0.10.0
 =======
 Sep 28, 2025
