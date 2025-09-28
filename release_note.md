@@ -1,3 +1,5 @@
+- When converting markdown to HTML, generate GitHub-compatible IDs even if the header contains non-ASCII characters.
+
 v0.9.0
 ======
 May 30, 2025
