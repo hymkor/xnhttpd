@@ -44,7 +44,7 @@ func (s *ids) Generate(value []byte, kind ast.NodeKind) []byte {
 			result = append(result, v)
 		} else if util.IsSpace(v) || v == '-' || v == '_' {
 			result = append(result, '-')
-		} else {
+		} else if l > 1 {
 			for j := 0; j < int(l); j++ {
 				v := value[i+j]
 				result = append(result,
