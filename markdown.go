@@ -13,7 +13,7 @@ import (
 	"github.com/yuin/goldmark/parser"
 	goldmarkHtml "github.com/yuin/goldmark/renderer/html"
 
-	"github.com/hymkor/xnhttpd/idgen"
+	"github.com/hymkor/goldmark-mb-headingids"
 )
 
 //go:embed github.css
@@ -84,7 +84,7 @@ func catAsMarkdown(path string, w http.ResponseWriter) error {
 		setMarkdownOptions(false, false)
 	}
 
-	mdCtx := parser.NewContext(parser.WithIDs(idgen.New()))
+	mdCtx := parser.NewContext(parser.WithIDs(headingids.New()))
 	var buffer bytes.Buffer
 	err = markdownReader.Convert(source, &buffer, parser.WithContext(mdCtx))
 	if err != nil {
