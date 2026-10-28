@@ -2,7 +2,7 @@ Changelog
 =========
 ( [English](./CHANGELOG.md) / Janapase )
 
-- Ctrl-C で停止させられた時に正常終了させるようにした (#2)
+- Ctrl-C で停止させられた時に正常終了させるようにした (#2, #3)
 
 v0.10.1
 -------
