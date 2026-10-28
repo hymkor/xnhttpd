@@ -174,6 +174,28 @@ func (this *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+const timeoutSeconds = 5
+
+func handleCtrlC(ctx context.Context, service *http.Server) (
+	context.Context, context.CancelFunc) {
+
+	ctx, stop := signal.NotifyContext(ctx, os.Interrupt)
+
+	go func() {
+		<-ctx.Done()
+		stop()
+		_ctx, _cancel := context.WithTimeout(
+			context.Background(),
+			timeoutSeconds*time.Second)
+		defer _cancel()
+
+		if err := service.Shutdown(_ctx); err != nil {
+			log.Printf("Shutdown: %v", err)
+		}
+	}()
+	return ctx, stop
+}
+
 func mains(args []string) error {
 	if *flagWd != "" {
 		os.Chdir(*flagWd)
@@ -254,13 +276,8 @@ func mains(args []string) error {
 	}
 
 	ctx := context.Background()
-	ctx, stop := signal.NotifyContext(ctx, os.Interrupt)
+	ctx, stop := handleCtrlC(ctx, service)
 	defer stop()
-
-	go func() {
-		<-ctx.Done()
-		service.Shutdown(context.Background())
-	}()
 
 	err = service.ListenAndServe()
 	closeErr := service.Close()
