@@ -2,7 +2,7 @@ Changelog
 =========
 ( English / [Janapase](./CHANGELOG_ja.md) )
 
-- Gracefully shut down the web server when Ctrl-C is pressed.(#2)
+- Gracefully shut down the web server when Ctrl-C is pressed.(#2, #3)
 
 v0.10.1
 -------
