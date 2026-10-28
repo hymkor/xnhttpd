@@ -1,7 +1,9 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -12,6 +14,7 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
+	"os/signal"
 	"path"
 	"path/filepath"
 	"runtime"
@@ -250,9 +253,18 @@ func mains(args []string) error {
 		MaxHeaderBytes: 1 << 20,
 	}
 
+	ctx := context.Background()
+	ctx, stop := signal.NotifyContext(ctx, os.Interrupt)
+	defer stop()
+
+	go func() {
+		<-ctx.Done()
+		service.Shutdown(context.Background())
+	}()
+
 	err = service.ListenAndServe()
 	closeErr := service.Close()
-	if err != nil {
+	if err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return err
 	}
 	return closeErr
@@ -272,8 +284,10 @@ func main() {
 		runtime.GOOS,
 		runtime.GOARCH,
 		runtime.Version())
+	log.Print("Starting web server")
 	if err := mains(flag.Args()); err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(1)
 	}
+	log.Print("Web server stopped")
 }
