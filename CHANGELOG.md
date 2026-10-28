@@ -2,6 +2,8 @@ Changelog
 =========
 ( English / [Janapase](./CHANGELOG_ja.md) )
 
+- Gracefully shut down the web server when Ctrl-C is pressed.(#2)
+
 v0.10.1
 -------
 Sep 29, 2025

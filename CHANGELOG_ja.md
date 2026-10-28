@@ -2,6 +2,8 @@ Changelog
 =========
 ( [English](./CHANGELOG.md) / Janapase )
 
+- Ctrl-C で停止させられた時に正常終了させるようにした (#2)
+
 v0.10.1
 -------
 Sep 29, 2025
